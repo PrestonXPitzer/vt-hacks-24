@@ -35,6 +35,12 @@
             height: 100% !important;
             border-radius: 15px; /* Adjust the value as needed */
         }
+        #live-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50px; /* Adjust the value as needed */
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -57,6 +63,7 @@
         <div class="flex flex-grow">
             <div class="w-2/3 p-4">
                 <div class="w-full h-full bg-gray-100 rounded-lg shadow-lg p-4">
+                    <!--Set This to be a fixed size-->
                     <img class="w-full" src="" alt="Live Feed" id="live-feed">
                     <div class="text-center text-xl mt-4">Live Feed</div>
                 </div>
@@ -203,7 +210,7 @@
                 document.getElementById("line-length").innerHTML =  data.lineLength;
                 //DEBUG, use random data
                 //use a sin wave + noise
-                data = {lineLength: 10 + Math.sin(now.getTime() / 1000) + Math.random() * 2};
+                //data = {lineLength: 10 + Math.sin(now.getTime() / 1000) + Math.random() * 2};
                 //use the second as the x-axis cast as a string
                 lineLengthData.push({ x: stamp, y: data.lineLength });
 

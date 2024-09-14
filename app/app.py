@@ -1,5 +1,5 @@
 from flask import Flask, render_template, Response, jsonify
-from controllers import generate_frames, get_pedestrian_count  # Import the controllers module
+from controllers_yolo import generate_frames, get_pedestrian_count  # Import the controllers module
 
 app = Flask(__name__)
 
