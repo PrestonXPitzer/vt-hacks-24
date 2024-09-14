@@ -21,9 +21,15 @@ def video_feed():
 
 @app.route('/line-length')
 def line_length():
+    global trueIfIncreasing
+    global dataPts
+    global hourlyPts
+    global dailyPts
+    global weeklyPts
+    
     count = get_pedestrian_count()
     #increasing decresasin logic
-    if dataPts[-1] < count:
+    if dataPts[-1] is not None and dataPts[-1] < count:
         trueIfIncreasing = True
     else:
         trueIfIncreasing = False
