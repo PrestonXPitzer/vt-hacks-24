@@ -121,89 +121,114 @@
     <script type="javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script type="javascript" src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
-        var ctx = document.getElementById('lineLengthChart').getContext('2d');
-        // check that the Chart object is available
-        console.log(Chart);
-        var lineLengthChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [], // Time labels
-                datasets: [{
-                    label: 'Line Length',
-                    data: [], // Line length data
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    fill: false
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'second'
+    var ctx = document.getElementById('lineLengthChart').getContext('2d');
+    // check that the Chart object is available
+    console.log(Chart);
+    var lineLengthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // Time labels
+            datasets: [{
+                label: 'Line Length',
+                data: [], // Line length data
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'second',
+                        tooltipFormat: 'mm:ss', // Tooltip format as mm:ss
+                        displayFormats: {
+                            second: 'mm:ss' // X-axis label format
                         }
                     },
-                    y: {
-                        beginAtZero: true
+                    ticks: {
+                        display: false // Do not display x-axis ticks
                     }
+                },
+                y: {
+                    beginAtZero: true,
+                    min: 0, // Minimum value for y-axis
+                    max: 25 // Maximum value for y-axis
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true
                 }
             }
-        });
-
-        var lineLengthData = [];
-        var maxDataPoints = 60; // Last 60 seconds
-        var isHourlyView = false;
-        var hourlyData = [];
-
-        document.getElementById('toggleMode').addEventListener('click', function() {
-            isHourlyView = !isHourlyView;
-            this.textContent = isHourlyView ? 'Switch to Last 60 Seconds' : 'Switch to Hourly View';
-            updateChart();
-        });
-
-        function updateChart() {
-            if (isHourlyView) {
-                lineLengthChart.data.labels = hourlyData.map(d => d.x);
-                lineLengthChart.data.datasets[0].data = hourlyData.map(d => d.y);
-                lineLengthChart.options.scales.x.time.unit = 'minute';
-            } else {
-                lineLengthChart.data.labels = lineLengthData.map(d => d.x);
-                lineLengthChart.data.datasets[0].data = lineLengthData.map(d => d.y);
-                lineLengthChart.options.scales.x.time.unit = 'second';
-            }
-            lineLengthChart.update();
         }
+    });
 
-        function updateLineLength() {
-            fetch('/line-length')
-                .then(response => response.json())
-                .then(data => {
-                    var now = new Date();
-                    lineLengthData.push({ x: now, y: data.lineLength });
+    var lineLengthData = [];
+    var maxDataPoints = 60; // Last 60 seconds
+    var isHourlyView = false;
+    var hourlyData = [];
 
-                    // Keep only the last 60 seconds of data
-                    if (lineLengthData.length > maxDataPoints) {
-                        lineLengthData.shift();
-                    }
+    document.getElementById('toggleMode').addEventListener('click', function() {
+        isHourlyView = !isHourlyView;
+        this.textContent = isHourlyView ? 'Switch to Last 60 Seconds' : 'Switch to Hourly View';
+        updateChart();
+    });
 
-                    // Update hourly data
-                    if (now.getSeconds() === 0) {
-                        var minuteAverage = lineLengthData.reduce((sum, d) => sum + d.y, 0) / lineLengthData.length;
-                        hourlyData.push({ x: now, y: minuteAverage });
-
-                        // Keep only the last 60 minutes of data
-                        if (hourlyData.length > 60) {
-                            hourlyData.shift();
-                        }
-                    }
-
-                    updateChart();
-                });
+    function updateChart() {
+        if (isHourlyView) {
+            lineLengthChart.data.labels = hourlyData.map(d => d.x);
+            lineLengthChart.data.datasets[0].data = hourlyData.map(d => d.y);
+            lineLengthChart.options.scales.x.time.unit = 'minute';
+        } else {
+            lineLengthChart.data.labels = lineLengthData.map(d => d.x);
+            lineLengthChart.data.datasets[0].data = lineLengthData.map(d => d.y);
+            lineLengthChart.options.scales.x.time.unit = 'second';
         }
+        //set the x-axis ticks to the callback function
+        lineLengthChart.update();
+    }
 
-        setInterval(updateLineLength, 1000); // Update every second
+    function updateLineLength() {
+        fetch('/line-length')
+            .then(response => response.json())
+            .then(data => {
+                var now = new Date();
+                var nowMinutes = now.getMinutes();
+                var nowSeconds = now.getSeconds();
+                var stamp = nowMinutes + ':' + nowSeconds;
+                //DEBUG, use random data
+                //use a sin wave + noise
+                data = {lineLength: 10 + Math.sin(now.getTime() / 1000) + Math.random() * 2};
+                //use the second as the x-axis cast as a string
+                lineLengthData.push({ x: stamp, y: data.lineLength });
+
+                // Keep only the last 60 seconds of data
+                if (lineLengthData.length > maxDataPoints) {
+                    lineLengthData.shift();
+                }
+
+                // Update hourly data
+                if (now.getSeconds() === 0) {
+                    var minuteAverage = lineLengthData.reduce((sum, d) => sum + d.y, 0) / lineLengthData.length;
+                    hourlyData.push({ x: now, y: minuteAverage });
+
+                    // Keep only the last 60 minutes of data
+                    if (hourlyData.length > 60) {
+                        hourlyData.shift();
+                    }
+                }
+
+                updateChart();
+            });
+    }
+
+    setInterval(updateLineLength, 1000); // Update every second
+
+
     </script>
 </body>
 </html>
