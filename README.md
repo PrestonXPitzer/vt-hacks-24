@@ -1,5 +1,4 @@
 # MealGauge
----
 ## Running Locally
 ### Windows (via PowerShell)
 ```
