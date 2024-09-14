@@ -42,14 +42,15 @@ def get_pedestrian_count():
 
     return count
 
-def generate_frames(fps=0.2):
+def generate_frames(fps=0.5):
     """
     Generate frames with bounding boxes around the detected people at a fixed frame rate.
     """
     delay = 1.0 / fps  # Calculate the delay between frames
 
     while True:
-        start_time = time.time()  # Record the start time
+        # Wait for the delay period before capturing the next frame
+        time.sleep(delay)
 
         ret, frame = cap.read()
         if not ret:
@@ -61,7 +62,3 @@ def generate_frames(fps=0.2):
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-        # Calculate the elapsed time and sleep for the remaining time to maintain the frame rate
-        elapsed_time = time.time() - start_time
-        time.sleep(max(0, delay - elapsed_time))
