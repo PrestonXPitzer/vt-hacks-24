@@ -2,6 +2,7 @@ import torch
 import cv2
 from PIL import Image
 import numpy as np
+import time
 
 # Load the YOLOv5 model outside of the functions
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
@@ -41,11 +42,15 @@ def get_pedestrian_count():
 
     return count
 
-def generate_frames():
+def generate_frames(fps=1):
     """
-    Generate frames with bounding boxes around the detected people.
+    Generate frames with bounding boxes around the detected people at a fixed frame rate.
     """
+    delay = 1.0 / fps  # Calculate the delay between frames
+
     while True:
+        start_time = time.time()  # Record the start time
+
         ret, frame = cap.read()
         if not ret:
             break
@@ -64,9 +69,11 @@ def generate_frames():
 
         # Encode the frame in JPEG format
         ret, buffer = cv2.imencode('.jpg', frame)
-        #reduce the size of the image to 80% of the original size
-        frame = cv2.resize(frame, (0, 0), fx=0.8, fy=0.8)
         frame = buffer.tobytes()
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+        # Calculate the elapsed time and sleep for the remaining time to maintain the frame rate
+        elapsed_time = time.time() - start_time
+        time.sleep(max(0, delay - elapsed_time))

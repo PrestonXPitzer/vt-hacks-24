@@ -1,13 +1,14 @@
 from flask import Flask, render_template, Response, jsonify
 from controllers_yolo import generate_frames, get_pedestrian_count  # Import the controllers module
 import math
+import random
 dataPts = []
 hourlyPts = []
 dailyPts = []
 weeklyPts = []
 lastCount = 0
 #the values here should be the output of a sin wave + random noise
-grubHub = [int(math.sin(x) * 3 + 4) + int(math.random() * 2) for x in range(60)]
+grubHub = [int(math.sin(x) * 3 + 4) + random.randint(1,3) for x in range(60)]
 grubhub_index = 0
 
 trueIfIncreasing = False
