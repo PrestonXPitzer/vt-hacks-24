@@ -18,7 +18,7 @@ def preprocess_image(frame):
     Preprocess the input frame to the required dimensions for YOLOv5.
     """
     # Resize the frame to 640x640 pixels 
-    frame_resized = cv2.resize(frame, (640, 640))
+    frame_resized = cv2.resize(frame, (240, 240))
     # Convert the frame to a PIL image
     frame_pil = Image.fromarray(cv2.cvtColor(frame_resized, cv2.COLOR_BGR2RGB))
     return frame_pil
@@ -42,10 +42,7 @@ def get_pedestrian_count():
 
     return count
 
-def generate_frames(fps=0.5):
-    """
-    Generate frames with bounding boxes around the detected people at a fixed frame rate.
-    """
+def generate_frames(fps=2):
     delay = 1.0 / fps  # Calculate the delay between frames
 
     while True:
