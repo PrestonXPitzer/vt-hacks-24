@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col">
                 <div id="feed">
-                    <img src="/video_feed" />
+                    <img id="vid_feed" src="/video_feed" />
                 </div>
             </div>
             <div class="col">
@@ -34,8 +34,12 @@
                     <h6>Total Line Count</h6>
                 </div>
                 <div class="bigstats bg-body-tertiary">
-                    <h1 style="font-weight: bold;"><div id="total-wait">0 min</div></h1>
-                    <h4><div id="trend">▲ increasing</div></h4>
+                    <h1 style="font-weight: bold;">
+                        <div id="total-wait">0 min</div>
+                    </h1>
+                    <h4>
+                        <div id="trend">▲ increasing</div>
+                    </h4>
                     <h6>Total Estimated Wait Time</h6>
                 </div>
             </div>
@@ -43,19 +47,25 @@
         <div class="row">
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;"><div id="camera-line">0</div></h1>
+                    <h1 style="font-weight: bold;">
+                        <div id="camera-line">0</div>
+                    </h1>
                     <h6>Camera Count</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;"><div id="grub-line">0</div></h1>
+                    <h1 style="font-weight: bold;">
+                        <div id="grub-line">0</div>
+                    </h1>
                     <h6>Grubhub Count</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;"><div id="grub-wait">0</div></h1>
+                    <h1 style="font-weight: bold;">
+                        <div id="grub-wait">0</div>
+                    </h1>
                     <h6>Grubhub Estimated Wait Time</h6>
                 </div>
             </div>
@@ -63,19 +73,25 @@
         <div class="row">
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;"><div id="day-avg">0</div></h1>
+                    <h1 style="font-weight: bold;">
+                        <div id="day-avg">0</div>
+                    </h1>
                     <h6>Day Average</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;"><div id="hour-avg">0</div></h1>
+                    <h1 style="font-weight: bold;">
+                        <div id="hour-avg">0</div>
+                    </h1>
                     <h6>Hour Average</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;"><div id="week-avg">0</div></h1>
+                    <h1 style="font-weight: bold;">
+                        <div id="week-avg">0</div>
+                    </h1>
                     <h6>Weekly Average</h6>
                 </div>
             </div>
@@ -91,11 +107,15 @@
         </div>
         <div class="row">
             <div class="col">
-                <div>
-                </div>
+                <img src="{{url_for('static', filename='rpi.gif')}}">
             </div>
             <div class="col">
-                <div>
+                <div class="about">
+                    <h3>About the project: </h3>
+                    <p>This project aims to help students avoid long lines at dining halls. A live camera powered by a
+                        Raspberry Pi provides a feed on site. Our website then displays the data, using computer vision
+                        to provide a person count.</p>
+
                 </div>
             </div>
         </div>
@@ -112,11 +132,11 @@
                     document.getElementById("day-avg").innerHTML = String(data.dailyAverage);
                     document.getElementById("week-avg").innerHTML = String(data.weeklyAverage);
                     document.getElementById("grub-line").innerHTML = String(4);
-                    document.getElementById("grub-wait").innerHTML = String(Math.round((4*40) / 60));
+                    document.getElementById("grub-wait").innerHTML = String(Math.round((4 * 40) / 60));
                     document.getElementById("total-wait").innerHTML = String(Math.round(((data.lineLength + data.grubHub) * 40) / 60));
                     document.getElementById("total-line").innerHTML = String(data.lineLength + data.grubHub);
 
-                    if(data.isIncreasing) {
+                    if (data.isIncreasing) {
                         document.getElementById("trend").innerHTML = "▲ increasing"
                     } else {
                         document.getElementById("trend").innerHTML = "▼ decreasing"
