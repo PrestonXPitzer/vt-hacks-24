@@ -5,6 +5,7 @@ dataPts = []
 hourlyPts = []
 dailyPts = []
 weeklyPts = []
+lastCount = 0
 
 trueIfIncreasing = False
 
@@ -26,13 +27,14 @@ def line_length():
     global hourlyPts
     global dailyPts
     global weeklyPts
-    
+    global lastCount
+
     count = get_pedestrian_count()
-    #increasing decresasin logic
-    if dataPts[-1] is not None and dataPts[-1] < count:
+    if count > lastCount:
         trueIfIncreasing = True
     else:
         trueIfIncreasing = False
+    lastCount = count
     
     if len(dataPts) < 60:
         dataPts.append(count)
