@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meal Gauge</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <nav class="navbar sticky-top navbar-dark bg-dark justify-content-center">
+        <span class="navbar-brand mb-0 h1">Meal Gauge</span>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div id="feed">
+                    <img src="/video_feed" />
+                </div>
+            </div>
+            <div class="col">
+                <div class="bigstats bg-body-tertiary">
+                    <h1 style="font-weight: bold;">16 people</h1>
+                    <h6>Total Line Count</h6>
+                </div>
+                <div class="bigstats bg-body-tertiary">
+                    <h1 style="font-weight: bold;">40 min</h1>
+                    <h4 style="color: red;">▲ increasing</h4>
+                    <h6>Total Estimated Wait Time</h6>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="auxstats">
+                    <h1 style="font-weight: bold;">16 people</h1>
+                    <h6>Camera Count</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="auxstats">
+                    <h1 style="font-weight: bold;">16 people</h1>
+                    <h6>Grubhub Count</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="auxstats">
+                    <h1 style="font-weight: bold;">16 min</h1>
+                    <h6>Grubhub Estimated Wait Time</h6>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="auxstats">
+                    <h1 style="font-weight: bold;">86 people</h1>
+                    <h6>Last Hour Average</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="auxstats">
+                    <h1 style="font-weight: bold;">456 people</h1>
+                    <h6>Last Day Average</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="auxstats">
+                    <h1 style="font-weight: bold;">n/a</h1>
+                    <h6>Weekly Average</h6>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="about">
+                    bullshit etc loren ipsum twisted tea rizz gyatt homeless -500 credit somebody please fill this in
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script type="javascript" src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+        var ctx = document.getElementById('lineLengthChart').getContext('2d');
+        // check that the Chart object is available
+        console.log(Chart);
+        var lineLengthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Time labels
+                datasets: [{
+                    label: 'Line Length',
+                    data: [], // Line length data
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'second',
+                            tooltipFormat: 'mm:ss', // Tooltip format as mm:ss
+                            displayFormats: {
+                                second: 'mm:ss' // X-axis label format
+                            }
+                        },
+                        ticks: {
+                            display: false // Do not display x-axis ticks
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        min: 0, // Minimum value for y-axis
+                        max: 25 // Maximum value for y-axis
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+
+        var lineLengthData = [];
+        var maxDataPoints = 60; // Last 60 seconds
+        var isHourlyView = false;
+        var hourlyData = [];
+
+        document.getElementById('toggleMode').addEventListener('click', function () {
+            isHourlyView = !isHourlyView;
+            this.textContent = isHourlyView ? 'Switch to Last 60 Seconds' : 'Switch to Hourly View';
+            updateChart();
+        });
+
+        function updateChart() {
+            if (isHourlyView) {
+                lineLengthChart.data.labels = hourlyData.map(d => d.x);
+                lineLengthChart.data.datasets[0].data = hourlyData.map(d => d.y);
+                lineLengthChart.options.scales.x.time.unit = 'minute';
+            } else {
+                lineLengthChart.data.labels = lineLengthData.map(d => d.x);
+                lineLengthChart.data.datasets[0].data = lineLengthData.map(d => d.y);
+                lineLengthChart.options.scales.x.time.unit = 'second';
+            }
+            //set the x-axis ticks to the callback function
+            lineLengthChart.update();
+        }
+
+        function updateLineLength() {
+            fetch('/line-length')
+                .then(response => response.json())
+                .then(data => {
+                    var now = new Date();
+                    var nowMinutes = now.getMinutes();
+                    var nowSeconds = now.getSeconds();
+                    var stamp = nowMinutes + ':' + nowSeconds;
+                    document.getElementById("line-length").innerHTML = data.lineLength;
+                    //DEBUG, use random data
+                    //use a sin wave + noise
+                    data = { lineLength: 10 + Math.sin(now.getTime() / 1000) + Math.random() * 2 };
+                    //use the second as the x-axis cast as a string
+                    lineLengthData.push({ x: stamp, y: data.lineLength });
+
+                    // Keep only the last 60 seconds of data
+                    if (lineLengthData.length > maxDataPoints) {
+                        lineLengthData.shift();
+                    }
+
+                    // Update hourly data
+                    if (now.getSeconds() === 0) {
+                        var minuteAverage = lineLengthData.reduce((sum, d) => sum + d.y, 0) / lineLengthData.length;
+                        hourlyData.push({ x: now, y: minuteAverage });
+
+                        // Keep only the last 60 minutes of data
+                        if (hourlyData.length > 60) {
+                            hourlyData.shift();
+                        }
+                    }
+
+                    updateChart();
+                    //get the newest image from the server and update the image
+                    document.getElementById('live-feed').src = "{{ url_for('video_feed') }}";
+
+                });
+        }
+
+        setInterval(updateLineLength, 5000); // Update every 5 seconds
+
+
+    </script>
+
+
+</body>
+
+</html>
