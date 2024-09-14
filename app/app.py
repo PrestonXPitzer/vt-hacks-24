@@ -23,7 +23,11 @@ def video_feed():
 def line_length():
     count = get_pedestrian_count()
     #increasing decresasin logic
-    if 
+    if dataPts[-1] < count:
+        trueIfIncreasing = True
+    else:
+        trueIfIncreasing = False
+    
     if len(dataPts) < 60:
         dataPts.append(count)
     else:
