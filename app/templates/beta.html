@@ -28,12 +28,14 @@
             </div>
             <div class="col">
                 <div class="bigstats bg-body-tertiary">
-                    <h1 style="font-weight: bold;">16 people</h1>
+                    <h1 style="font-weight: bold;">
+                        <div id="total-line">0</div>
+                    </h1>
                     <h6>Total Line Count</h6>
                 </div>
                 <div class="bigstats bg-body-tertiary">
-                    <h1 style="font-weight: bold;">40 min</h1>
-                    <h4 style="color: red;">▲ increasing</h4>
+                    <h1 style="font-weight: bold;"><div id="total-wait">0 min</div></h1>
+                    <h4><div id="trend">▲ increasing</div></h4>
                     <h6>Total Estimated Wait Time</h6>
                 </div>
             </div>
@@ -41,19 +43,19 @@
         <div class="row">
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;">16 people</h1>
+                    <h1 style="font-weight: bold;"><div id="camera-line">0</div></h1>
                     <h6>Camera Count</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;">16 people</h1>
+                    <h1 style="font-weight: bold;"><div id="grub-line">0</div></h1>
                     <h6>Grubhub Count</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;">16 min</h1>
+                    <h1 style="font-weight: bold;"><div id="grub-wait">0</div></h1>
                     <h6>Grubhub Estimated Wait Time</h6>
                 </div>
             </div>
@@ -61,50 +63,68 @@
         <div class="row">
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;">86 people</h1>
-                    <h6>Last Hour Average</h6>
+                    <h1 style="font-weight: bold;"><div id="day-avg">0</div></h1>
+                    <h6>Day Average</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;">456 people</h1>
-                    <h6>Last Day Average</h6>
+                    <h1 style="font-weight: bold;"><div id="hour-avg">0</div></h1>
+                    <h6>Hour Average</h6>
                 </div>
             </div>
             <div class="col">
                 <div class="auxstats">
-                    <h1 style="font-weight: bold;">n/a</h1>
+                    <h1 style="font-weight: bold;"><div id="week-avg">0</div></h1>
                     <h6>Weekly Average</h6>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <div class="about">
-                    bullshit etc loren ipsum twisted tea rizz gyatt homeless -500 credit somebody please fill this in
+                <div class="chart">
+                    <button id="toggleMode" style="display: none;">Switch to Hourly View</button>
+                    <canvas id="lineLengthChart"></canvas>
                 </div>
 
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <div>
+                </div>
+            </div>
+            <div class="col">
+                <div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script>
+        function update() {
+            fetch('/computed-data')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    document.getElementById("camera-line").innerHTML = String(data.lineLength);
+                    document.getElementById("hour-avg").innerHTML = String(data.hourlyAverage);
+                    document.getElementById("day-avg").innerHTML = String(data.dailyAverage);
+                    document.getElementById("week-avg").innerHTML = String(data.weeklyAverage);
+                    document.getElementById("grub-line").innerHTML = String(4);
+                    document.getElementById("grub-wait").innerHTML = String(Math.round((4*40) / 60));
+                    document.getElementById("total-wait").innerHTML = String(Math.round(((data.lineLength + data.grubHub) * 40) / 60));
+                    document.getElementById("total-line").innerHTML = String(data.lineLength + data.grubHub);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    if(data.isIncreasing) {
+                        document.getElementById("trend").innerHTML = "▲ increasing"
+                    } else {
+                        document.getElementById("trend").innerHTML = "▼ decreasing"
+                    }
+                })
+        }
+        setInterval(update, 5000); // Update every 5 seconds
+    </script>
 
     <script type="javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script type="javascript" src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
@@ -191,7 +211,7 @@
                     document.getElementById("line-length").innerHTML = data.lineLength;
                     //DEBUG, use random data
                     //use a sin wave + noise
-                    data = { lineLength: 10 + Math.sin(now.getTime() / 1000) + Math.random() * 2 };
+                    //data = {lineLength: 10 + Math.sin(now.getTime() / 1000) + Math.random() * 2};
                     //use the second as the x-axis cast as a string
                     lineLengthData.push({ x: stamp, y: data.lineLength });
 
@@ -222,8 +242,6 @@
 
 
     </script>
-
-
 </body>
 
 </html>

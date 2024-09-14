@@ -38,10 +38,25 @@ img {
     margin-bottom: 10px;
 }
 
-.about {
+.chart {
     margin-top: 40px;
     border: solid;
-    height: 850px;
     border-radius: 20px;
 }
 
+.about {
+    border: solid;
+    border-radius: 20px;
+    height: 200px;
+}
+
+.gif {
+    border: solid;
+    border-radius: 20px;
+    height: 20px
+}
+#lineLengthChart {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 15px; /* Adjust the value as needed */
+}
