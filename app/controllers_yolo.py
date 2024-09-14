@@ -42,7 +42,7 @@ def get_pedestrian_count():
 
     return count
 
-def generate_frames(fps=1):
+def generate_frames(fps=0.2):
     """
     Generate frames with bounding boxes around the detected people at a fixed frame rate.
     """
