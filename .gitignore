@@ -1,3 +1,4 @@
 venmv/
 raspi_detect/
 env/
+app/__pycache__
