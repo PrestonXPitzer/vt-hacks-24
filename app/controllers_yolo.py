@@ -55,18 +55,6 @@ def generate_frames(fps=0.2):
         if not ret:
             break
 
-        # Preprocess the frame
-        frame_pil = preprocess_image(frame)
-
-        # Perform inference on the frame
-        results = model(frame_pil)
-
-        # Draw bounding boxes around the detected people
-        for pred in results.pred[0]:
-            x1, y1, x2, y2, conf, cls = pred
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-
         # Encode the frame in JPEG format
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
