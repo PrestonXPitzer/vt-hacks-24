@@ -1,10 +1,10 @@
 # MealGauge
 ## Project Description
-```
+
 This project aims to help students avoid long lines at dining halls
 A live camera powered by a Raspberry Pi provides a feed on site
 A website displays the data, using computer vision to provide a person count
-```
+
 
 ## Running Locally
 ### Windows (via PowerShell)
