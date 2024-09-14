@@ -57,7 +57,7 @@
         <div class="flex flex-grow">
             <div class="w-2/3 p-4">
                 <div class="w-full h-full bg-gray-100 rounded-lg shadow-lg p-4">
-                    <img class="w-full" src="{{ url_for('video_feed') }}" alt="Live Feed">
+                    <img class="w-full" src="" alt="Live Feed" id="live-feed">
                     <div class="text-center text-xl mt-4">Live Feed</div>
                 </div>
             </div>
@@ -200,6 +200,7 @@
                 var nowMinutes = now.getMinutes();
                 var nowSeconds = now.getSeconds();
                 var stamp = nowMinutes + ':' + nowSeconds;
+                document.getElementById("line-length").innerHTML =  data.lineLength;
                 //DEBUG, use random data
                 //use a sin wave + noise
                 data = {lineLength: 10 + Math.sin(now.getTime() / 1000) + Math.random() * 2};
@@ -223,10 +224,13 @@
                 }
 
                 updateChart();
+                //get the newest image from the server and update the image
+                document.getElementById('live-feed').src = "{{ url_for('video_feed') }}";
+
             });
     }
 
-    setInterval(updateLineLength, 1000); // Update every second
+    setInterval(updateLineLength, 5000); // Update every 5 seconds
 
 
     </script>

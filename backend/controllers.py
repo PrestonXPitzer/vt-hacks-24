@@ -2,11 +2,9 @@ import cv2
 
 cap = cv2.VideoCapture(0)
 
-# Load the Haar cascade
-cascade_path = cv2.data.haarcascades + 'haarcascade_fullbody.xml'
-print("Loading the Haar cascade xml, this may take a while...")
-cascade = cv2.CascadeClassifier(cascade_path)
-print("Load Complete!")
+# Initialize the HOG descriptor/person detector
+hog = cv2.HOGDescriptor()
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
 def get_pedestrian_count():
     ret, frame = cap.read()
@@ -14,10 +12,9 @@ def get_pedestrian_count():
         return 0
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    pedestrians = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    pedestrians, _ = hog.detectMultiScale(gray, winStride=(8, 8), padding=(8, 8), scale=1.05)
     
-    count = len(pedestrians)  # This can be replaced with a region of interest check at some point, but for now
-    # just return the number of pedestrians detected
+    count = len(pedestrians)  # Return the number of pedestrians detected
 
     return count
 
@@ -28,7 +25,7 @@ def generate_frames():
             break
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        pedestrians = cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        pedestrians, _ = hog.detectMultiScale(gray, winStride=(8, 8), padding=(8, 8), scale=1.05)
         
         # Draw bounding boxes
         for (x, y, w, h) in pedestrians:
