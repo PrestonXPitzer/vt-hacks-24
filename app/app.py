@@ -1,11 +1,14 @@
 from flask import Flask, render_template, Response, jsonify
 from controllers_yolo import generate_frames, get_pedestrian_count  # Import the controllers module
-
+import math
 dataPts = []
 hourlyPts = []
 dailyPts = []
 weeklyPts = []
 lastCount = 0
+#the values here should be the output of a sin wave + random noise
+grubHub = [int(math.sin(x) * 3 + 4) + int(math.random() * 2) for x in range(60)]
+grubhub_index = 0
 
 trueIfIncreasing = False
 
@@ -14,7 +17,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('beta.html')
 
 @app.route('/video_feed')
 def video_feed():
@@ -51,24 +54,16 @@ def line_length():
         dataPts = []
     return jsonify(lineLength=count)
 
-@app.route('/hourly-average')
-def hourly_average():
-    avg = sum(hourlyPts) / len(hourlyPts) if hourlyPts else 0
-    return jsonify(hourlyAverage=avg)
-
-@app.route('/daily-average')
-def daily_average():
-    avg = sum(dailyPts) / len(dailyPts) if dailyPts else 0
-    return jsonify(dailyAverage=avg)
-
-@app.route('/weekly-average')
-def weekly_average():
-    avg = sum(weeklyPts) / len(weeklyPts) if weeklyPts else 0
-    return jsonify(weeklyAverage=avg)
-
-@app.route('/is-increasing')
-def is_increasing():
-    return jsonify(isIncreasing=trueIfIncreasing)
+@app.route('/computed-data')
+def computed_data():
+    global grubhub_index
+    grubhub_index += 1
+    return jsonify(lineLength=get_pedestrian_count(),
+                    hourlyAverage=sum(hourlyPts) / len(hourlyPts) if hourlyPts else 0,
+                    dailyAverage=sum(dailyPts) / len(dailyPts) if dailyPts else 0,
+                    weeklyAverage=sum(weeklyPts) / len(weeklyPts) if weeklyPts else 0,
+                    isIncreasing=trueIfIncreasing,
+                    grubHub=grubHub[grubhub_index % len(grubHub)])
 
 
 
