@@ -133,9 +133,9 @@
                 .then(data => {
                     console.log(data)
                     document.getElementById("camera-line").innerHTML = `${data.lineLength} people`;
-                    document.getElementById("hour-avg").innerHTML = `${data.hourlyAverage} people`;
-                    document.getElementById("day-avg").innerHTML = `${data.dailyAverage} people`;
-                    document.getElementById("week-avg").innerHTML = `${data.weeklyAverage} people`;
+jk                    document.getElementById("hour-avg").innerHTML = `${data.hourlyAverage.toFixed(2)} people`;
+                    document.getElementById("day-avg").innerHTML = `${data.dailyAverage.toFixed(2)} people`;
+                    document.getElementById("week-avg").innerHTML = `${data.weeklyAverage.toFixed(2)} people`;
                     document.getElementById("grub-line").innerHTML = `${data.grubHub} people`;
                     document.getElementById("grub-wait").innerHTML = `${Math.round((4 * 40) / 60)} minutes`;
                     document.getElementById("total-wait").innerHTML = `${Math.round(((data.lineLength + data.grubHub) * 40) / 60)} minutes`;
