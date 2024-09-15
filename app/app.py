@@ -11,6 +11,7 @@ lastCount = 0
 grubHub = [int(math.sin(x) * 3 + 4) + random.randint(0,1) for x in range(60)]
 #repeat each value 10 times
 grubHub = [x for x in grubHub for _ in range(10)]
+print(grubHub)
 grubhub_index = 0
 
 trueIfIncreasing = False
@@ -55,18 +56,22 @@ def line_length():
                 dailyPts = []
             hourlyPts = []
         dataPts = []
-    return jsonify(lineLength=count)
+    return jsonify(lineLength=count,
+                   grubHubData=grubHub[grubhub_index])
 
 @app.route('/computed-data')
 def computed_data():
     global grubhub_index
-    grubhub_index += 1
+    if grubhub_index < len(grubHub) - 1:
+        grubhub_index += 1
+    else:
+        grubhub_index = 0
     return jsonify(lineLength=get_pedestrian_count(),
                     hourlyAverage=sum(hourlyPts) / len(hourlyPts) if hourlyPts else 0,
                     dailyAverage=sum(dailyPts) / len(dailyPts) if dailyPts else 0,
                     weeklyAverage=sum(weeklyPts) / len(weeklyPts) if weeklyPts else 0,
                     isIncreasing=trueIfIncreasing,
-                    grubHub=grubHub[grubhub_index % len(grubHub)])
+                    grubHub=grubHub[grubhub_index])
 
 
 
