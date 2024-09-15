@@ -15,8 +15,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <nav class="navbar sticky-top navbar-dark bg-dark justify-content-center">
-        <span class="navbar-brand mb-0 h1">Meal Gauge</span>
+    <nav class="navbar sticky-top navbar-dark bg-dark justify-content-center"  style="display: flex">
+       <!--- <span class="navbar-brand mb-0 h1">Meal Gauge</span> -->
+       <div class="container">
+            <a class="navbar-brand" href="x.com">
+                <img src="{{ url_for('static', filename='images/MealGaugeAssem.gif') }}" alt="Meal Gauge" class="headerimage"></img>
+            </a>
+        </div>
     </nav>
 
     <div class="container">
@@ -127,14 +132,14 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log(data)
-                    document.getElementById("camera-line").innerHTML = String(data.lineLength);
-                    document.getElementById("hour-avg").innerHTML = String(data.hourlyAverage);
-                    document.getElementById("day-avg").innerHTML = String(data.dailyAverage);
-                    document.getElementById("week-avg").innerHTML = String(data.weeklyAverage);
-                    document.getElementById("grub-line").innerHTML = String(4);
-                    document.getElementById("grub-wait").innerHTML = String(Math.round((4 * 40) / 60));
-                    document.getElementById("total-wait").innerHTML = String(Math.round(((data.lineLength + data.grubHub) * 40) / 60));
-                    document.getElementById("total-line").innerHTML = String(data.lineLength + data.grubHub);
+                    document.getElementById("camera-line").innerHTML = `${data.lineLength} people`;
+                    document.getElementById("hour-avg").innerHTML = `${data.hourlyAverage} people`;
+                    document.getElementById("day-avg").innerHTML = `${data.dailyAverage} people`;
+                    document.getElementById("week-avg").innerHTML = `${data.weeklyAverage} people`;
+                    document.getElementById("grub-line").innerHTML = `${data.grubHub} people`;
+                    document.getElementById("grub-wait").innerHTML = `${Math.round((4 * 40) / 60)} minutes`;
+                    document.getElementById("total-wait").innerHTML = `${Math.round(((data.lineLength + data.grubHub) * 40) / 60)} minutes`;
+                    document.getElementById("total-line").innerHTML = `${data.lineLength + data.grubHub} people`;
 
                     if (data.isIncreasing) {
                         document.getElementById("trend").innerHTML = "▲ increasing"

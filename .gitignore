@@ -2,3 +2,5 @@ venmv/
 raspi_detect/
 env/
 app/__pycache__
+app/yolo5s.pt
+yolo5s.pt

@@ -13,7 +13,16 @@ img {
     align-items: center;
     margin-top: 30px;
 }
-
+.headerimage {
+    border-radius: 20px;
+    height: 128px;
+    width: 228x;
+    border: solid;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
 .bigstats {
     height: 200px;
     border-radius: 20px;

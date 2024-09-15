@@ -8,7 +8,9 @@ dailyPts = []
 weeklyPts = []
 lastCount = 0
 #the values here should be the output of a sin wave + random noise
-grubHub = [int(math.sin(x) * 3 + 4) + random.randint(1,3) for x in range(60)]
+grubHub = [int(math.sin(x) * 3 + 4) + random.randint(0,1) for x in range(60)]
+#repeat each value 10 times
+grubHub = [x for x in grubHub for _ in range(10)]
 grubhub_index = 0
 
 trueIfIncreasing = False
